@@ -60,7 +60,7 @@ class _PizzaDiameterTabsState extends State<PizzaDiameterTabs> {
                             UpdatePrice(
                               price: widget.pizzaProduct.sizes
                                   .firstWhere((element) =>
-                                      element.keys.first == pizzaDiameter)
+                                      element.keys.contains(pizzaDiameter))
                                   .values
                                   .first,
                             ),

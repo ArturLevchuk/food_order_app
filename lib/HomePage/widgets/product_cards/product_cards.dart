@@ -15,7 +15,7 @@ class ProductCardCarousel extends StatefulWidget {
 class _ProductCardCarouselState extends State<ProductCardCarousel>
     with SingleTickerProviderStateMixin {
   late final PageController _pageController =
-      PageController(viewportFraction: 0.71);
+      PageController(viewportFraction: .65.w);
 
   int currentPage = 0;
 
@@ -27,19 +27,15 @@ class _ProductCardCarouselState extends State<ProductCardCarousel>
         controller: _pageController,
         clipBehavior: Clip.none,
         itemCount: allProducts.length,
-        itemBuilder: (context, index) => GestureDetector(
-          onTap: () {
-            if (index > currentPage) {
-              _pageController.animateToPage((currentPage + 1),
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.decelerate);
-            }
-            if (index < currentPage) {
-              _pageController.animateToPage((currentPage - 1),
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.decelerate);
-            }
-          },
+        itemBuilder: (context, index) => AnimatedContainer(
+          padding: EdgeInsets.only(
+            right: currentPage == 0 && index == 0
+                ? 95.w
+                : currentPage == 0 && index == 1
+                    ? 90.w
+                    : 0,
+          ),
+          duration: const Duration(milliseconds: 100),
           child: FittedBox(
             alignment: Alignment.topCenter,
             fit: BoxFit.none,
