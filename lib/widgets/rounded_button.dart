@@ -20,9 +20,9 @@ class RoundedButton extends StatelessWidget {
       style: ButtonStyle(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         // padding: MaterialStatePropertyAll(EdgeInsets.zero),
-        padding: MaterialStatePropertyAll(
-          const EdgeInsets.symmetric(vertical: 9).r,
-        ),
+        // padding: MaterialStatePropertyAll(
+        //   const EdgeInsets.symmetric(vertical: 9).r,
+        // ),
         shape: MaterialStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.5).r,
