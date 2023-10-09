@@ -1,44 +1,51 @@
-enum ProductTypes { pizza, soup, drink }
+// enum ProductType { pizza, soup, drink, salads }
+
+enum ProductType {
+  pizza,
+  soup,
+  drink,
+  salads;
+
+  String getProductUnit(String unit) {
+    switch (this) {
+      case ProductType.pizza:
+        return "Ø$unit";
+      case ProductType.soup || ProductType.drink || ProductType.salads:
+        return "$unit гр.";
+      default:
+        return unit;
+    }
+  }
+}
 
 class Product {
   final String id;
   final String name;
   final String description;
-  final double price;
   final String imgSrc;
+  final ProductType productType;
   final List<Map<String, dynamic>> additives;
+  final List<Map<String, double>> sizes;
 
   Product({
     required this.id,
     required this.name,
     required this.description,
-    required this.price,
     required this.imgSrc,
+    required this.productType,
     required this.additives,
+    required this.sizes,
   });
 }
 
-class PizzaProduct extends Product {
-  final List<Map<String, double>> sizes;
-
-  PizzaProduct({
-    required super.id,
-    required super.name,
-    required super.description,
-    required super.imgSrc,
-    required this.sizes,
-    required super.additives,
-  }) : super(price: sizes.first.values.first);
-}
-
 List<Product> allProducts = [
-  PizzaProduct(
+  Product(
     id: "1",
     name: "Тревісо",
     description:
         "Соус гірчичний, сир Моцарела, салямі, свинина, мисливські ковбаски, помідори, мариновані огірки, мисливські ковбаски, перець гострий, олія часникова, зелень",
-    // price: 220,
     imgSrc: "assets/images/pizza.jpeg",
+    productType: ProductType.pizza,
     additives: [
       {"Моццарелла 40г": 35},
       {"Пармезан 20г": 30},
@@ -52,13 +59,13 @@ List<Product> allProducts = [
       {"75": 220}
     ],
   ),
-  PizzaProduct(
+  Product(
     id: "2",
     name: "Баварська",
     description:
         "Соус гірчичний, сир Моцарела, салямі, свинина, мисливські ковбаски, помідори, мариновані огірки, мисливські ковбаски, перець гострий, олія часникова, зелень",
-    // price: 310,
     imgSrc: "assets/images/bavarska.jpeg",
+    productType: ProductType.pizza,
     additives: [
       {"Моццарелла 40г": 35},
       {"Пармезан 20г": 110},
@@ -74,13 +81,13 @@ List<Product> allProducts = [
       {"125": 350},
     ],
   ),
-  PizzaProduct(
+  Product(
     id: "2",
     name: "Маргарита",
     description:
         "Соус гірчичний, сир Моцарела, салямі, свинина, мисливські ковбаски, помідори, мариновані огірки, мисливські ковбаски, перець гострий, олія часникова, зелень",
-    // price: 150,
     imgSrc: "assets/images/margarita.png",
+    productType: ProductType.pizza,
     additives: [
       {"Моццарелла 40г": 35},
       {"Пармезан 20г": 30},
@@ -96,13 +103,13 @@ List<Product> allProducts = [
       {"125": 350},
     ],
   ),
-  PizzaProduct(
+  Product(
     id: "2",
     name: "Пепероні",
     description:
         "Соус гірчичний, сир Моцарела, салямі, свинина, мисливські ковбаски, помідори, мариновані огірки, мисливські ковбаски, перець гострий, олія часникова, зелень",
-    // price: 215,
     imgSrc: "assets/images/peperoni.png",
+    productType: ProductType.salads,
     additives: [
       {"Моццарелла 40г": 35},
       {"Пармезан 20г": 30},
