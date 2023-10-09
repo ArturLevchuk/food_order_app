@@ -29,7 +29,8 @@ class AdditivesList extends StatelessWidget {
           ),
         ),
         ...List.generate(product.additives.length, (index) {
-          final Map<String, dynamic> currentAdditive = product.additives[index];
+          final Map<String, dynamic> currentAdditive =
+              Map.fromEntries([product.additives.entries.elementAt(index)]);
           final String nameOfAddetive = currentAdditive.keys.first;
           final String priceOfAddetive =
               currentAdditive.values.first.toString();

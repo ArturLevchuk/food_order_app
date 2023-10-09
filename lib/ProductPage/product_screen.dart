@@ -23,11 +23,14 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  Product get product => widget.product;
+
   @override
   Widget build(BuildContext context) {
+    final initPrice = double.parse(product.sizes.values.first.toString());
     return BlocProvider(
-      create: (context) =>
-          OrderPreparationBloc(widget.product.sizes.first.values.first),
+      create: (context) => OrderPreparationBloc(initPrice),
+      lazy: false,
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(

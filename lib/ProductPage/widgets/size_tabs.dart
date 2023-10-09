@@ -17,9 +17,8 @@ class SizeTabs extends StatefulWidget {
 }
 
 class _SizeTabsState extends State<SizeTabs> {
-  Product get product => widget.product;
-  late String pizzaDiameter = product.sizes.first.keys.first;
-
+  Map<String, dynamic> get sizes => widget.product.sizes;
+  late String currentSize = sizes.keys.first;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,25 +44,21 @@ class _SizeTabsState extends State<SizeTabs> {
             spacing: 10.w,
             children: [
               ...List.generate(
-                product.sizes.length,
+                sizes.length,
                 (index) {
-                  final String size = product.sizes[index].keys.first;
+                  final String sizeName = sizes.keys.elementAt(index);
                   return RoundedTabButton(
-                    text: product.productType.getProductUnit(size),
-                    isActive: pizzaDiameter == size,
+                    text: widget.product.productType.getProductUnit(sizeName),
+                    isActive: currentSize == sizeName,
                     fontWeight: FontWeight.w600,
                     onTap: () {
                       setState(() {
-                        pizzaDiameter = size;
+                        currentSize = sizeName;
                       });
+                      final double price =
+                          double.parse(sizes[sizeName].toString());
                       context.read<OrderPreparationBloc>().add(
-                            UpdatePrice(
-                              price: widget.product.sizes
-                                  .firstWhere((element) =>
-                                      element.keys.contains(pizzaDiameter))
-                                  .values
-                                  .first,
-                            ),
+                            UpdatePrice(price: price),
                           );
                     },
                   );

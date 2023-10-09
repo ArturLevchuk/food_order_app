@@ -82,7 +82,7 @@ class _ProductCardState extends State<ProductCard> {
             Row(
               children: [
                 Text(
-                  "${product.sizes.first.values.first} грн.",
+                  "${product.sizes.values.first} грн.",
                   style: GoogleFonts.montserrat(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
