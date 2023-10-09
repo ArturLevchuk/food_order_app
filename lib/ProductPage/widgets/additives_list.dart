@@ -9,11 +9,9 @@ class AdditivesList extends StatelessWidget {
   const AdditivesList({
     super.key,
     required this.product,
-    this.showButtons = true,
   });
 
   final Product product;
-  final bool showButtons;
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +53,26 @@ class AdditivesList extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10.w),
-                if (showButtons)
-                  BlocBuilder<OrderPreparationBloc, OrderPreparationState>(
-                    builder: (context, state) {
-                      return AddAdditiveButton(
-                        added: state.additives.contains(currentAdditive),
-                        onTap: () async {
-                          if (state.additives.contains(currentAdditive)) {
-                            context.read<OrderPreparationBloc>().add(
-                                  RemoveAdditive(additive: currentAdditive),
-                                );
-                          } else {
-                            context.read<OrderPreparationBloc>().add(
-                                  AddAdditive(
-                                    additive: currentAdditive,
-                                  ),
-                                );
-                          }
-                        },
-                      );
-                    },
-                  )
+                BlocBuilder<OrderPreparationBloc, OrderPreparationState>(
+                  builder: (context, state) {
+                    return AddAdditiveButton(
+                      added: state.additives.contains(currentAdditive),
+                      onTap: () async {
+                        if (state.additives.contains(currentAdditive)) {
+                          context.read<OrderPreparationBloc>().add(
+                                RemoveAdditive(additive: currentAdditive),
+                              );
+                        } else {
+                          context.read<OrderPreparationBloc>().add(
+                                AddAdditive(
+                                  additive: currentAdditive,
+                                ),
+                              );
+                        }
+                      },
+                    );
+                  },
+                )
               ],
             ),
           );

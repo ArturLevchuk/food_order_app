@@ -9,7 +9,7 @@ import '/models/product.dart';
 import 'bloc/order_preparation_bloc.dart';
 import 'widgets/additives_list.dart';
 import 'widgets/image_card.dart';
-import 'widgets/pizza_diameter_tabs.dart';
+import 'widgets/size_tabs.dart';
 
 import '/widgets/rounded_button.dart';
 
@@ -26,7 +26,8 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OrderPreparationBloc(widget.product.price),
+      create: (context) =>
+          OrderPreparationBloc(widget.product.sizes.first.values.first),
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
@@ -58,9 +59,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                   ),
                 ),
-                if (widget.product is PizzaProduct)
-                  PizzaDiameterTabs(
-                      pizzaProduct: widget.product as PizzaProduct),
+                SizeTabs(product: widget.product),
                 if (widget.product.additives.isNotEmpty)
                   RPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
