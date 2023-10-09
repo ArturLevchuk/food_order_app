@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_order_app/HomePage/home_page.dart';
+import 'package:food_order_app/ProductsBloc/products_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'CartPage/cart_screen.dart';
@@ -29,18 +31,37 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
-      builder: (context, _) => MaterialApp(
-        navigatorKey: appNavigatorKey,
-        debugShowCheckedModeBanner: false,
-        title: 'Food order app',
-        // theme: _buildTheme(Brightness.light),
-        theme: _buildTheme(Brightness.light),
-        routes: {
-          '/': (context) => const LoadingPage(),
-          LoadingPage.routeName: (context) => const LoadingPage(),
-          MainPage.routeName: (context) => const MainPage(),
-        },
+      builder: (context, _) => BlocProvider(
+        create: (context) => ProductsBloc()..add(FetchAndLoadProducts()),
+        child: MaterialApp(
+          navigatorKey: appNavigatorKey,
+          debugShowCheckedModeBanner: false,
+          title: 'Food order app',
+          theme: _buildTheme(Brightness.light),
+          routes: {
+            '/': (context) => const InitPage(),
+            LoadingPage.routeName: (context) => const LoadingPage(),
+            MainPage.routeName: (context) => const MainPage(),
+          },
+        ),
       ),
+    );
+  }
+}
+
+class InitPage extends StatelessWidget {
+  const InitPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProductsBloc, ProductsState>(
+      builder: (context, state) {
+        if (state.status == ProductStateLoad.loaded) {
+          return const MainPage();
+        } else {
+          return const LoadingPage();
+        }
+      },
     );
   }
 }
@@ -52,9 +73,6 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacementNamed(MainPage.routeName);
-    });
     return Scaffold(
       body: Center(
         child: CircularProgressIndicator(
