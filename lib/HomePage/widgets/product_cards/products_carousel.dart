@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,14 +87,8 @@ class _ProductsCarouselState extends State<ProductsCarousel>
                   controller: _pageController,
                   clipBehavior: Clip.none,
                   itemCount: productsByCategory.length,
-                  itemBuilder: (context, index) => AnimatedContainer(
-                    padding: EdgeInsets.only(
-                      right: currentPage == 0 && index == 0
-                          ? 95.w
-                          : currentPage == 0 && index == 1
-                              ? 90.w
-                              : 0,
-                    ),
+                  itemBuilder: (context, index) => AnimatedTranslate(
+                    position: currentPage == 0 ? Offset(-40.w, 0) : Offset.zero,
                     duration: const Duration(milliseconds: 100),
                     child: FittedBox(
                       alignment: Alignment.topCenter,
@@ -117,6 +110,37 @@ class _ProductsCarouselState extends State<ProductsCarousel>
           ),
         )
       ],
+    );
+  }
+}
+
+class AnimatedTranslate extends StatefulWidget {
+  const AnimatedTranslate(
+      {super.key,
+      required this.child,
+      required this.position,
+      required this.duration});
+  final Widget child;
+  final Offset position;
+  final Duration duration;
+
+  @override
+  State<AnimatedTranslate> createState() => _TranslateAnimationState();
+}
+
+class _TranslateAnimationState extends State<AnimatedTranslate> {
+  late final Offset initPosition = widget.position;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder(
+      tween: Tween<Offset>(begin: initPosition, end: widget.position),
+      builder: (context, value, child) => Transform.translate(
+        offset: value,
+        child: child,
+      ),
+      duration: widget.duration,
+      child: widget.child,
     );
   }
 }
