@@ -136,6 +136,7 @@ class _ProductCardState extends State<ProductCard> {
                             MaterialPageRoute(
                               builder: (context) =>
                                   ProductScreen(product: product),
+                              settings: RouteSettings(arguments: count),
                             ),
                           );
                         },

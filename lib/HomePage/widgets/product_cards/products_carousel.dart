@@ -25,7 +25,7 @@ class _ProductsCarouselState extends State<ProductsCarousel>
     with SingleTickerProviderStateMixin {
   late ProductType currentCategory = categoriesList.keys.first;
   late final PageController _pageController =
-      PageController(viewportFraction: .65.w);
+      PageController(viewportFraction: .72);
   late AnimationController fadeAnimationController = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 500))
     ..value = 1;
@@ -88,8 +88,11 @@ class _ProductsCarouselState extends State<ProductsCarousel>
                   clipBehavior: Clip.none,
                   itemCount: productsByCategory.length,
                   itemBuilder: (context, index) => AnimatedTranslate(
-                    position: currentPage == 0 ? Offset(-40.w, 0) : Offset.zero,
-                    duration: const Duration(milliseconds: 100),
+                    position: currentPage == 0 && (index == 0 || index == 1)
+                        ? Offset(-45.w, 0)
+                        : Offset.zero,
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeOutExpo,
                     child: FittedBox(
                       alignment: Alignment.topCenter,
                       fit: BoxFit.none,
@@ -99,6 +102,7 @@ class _ProductsCarouselState extends State<ProductsCarousel>
                       ),
                     ),
                   ),
+                  allowImplicitScrolling: false,
                   onPageChanged: (value) {
                     setState(() {
                       currentPage = value;
@@ -115,14 +119,17 @@ class _ProductsCarouselState extends State<ProductsCarousel>
 }
 
 class AnimatedTranslate extends StatefulWidget {
-  const AnimatedTranslate(
-      {super.key,
-      required this.child,
-      required this.position,
-      required this.duration});
+  const AnimatedTranslate({
+    super.key,
+    required this.child,
+    required this.position,
+    required this.duration,
+    this.curve = Curves.linear,
+  });
   final Widget child;
   final Offset position;
   final Duration duration;
+  final Curve curve;
 
   @override
   State<AnimatedTranslate> createState() => _TranslateAnimationState();
@@ -135,6 +142,7 @@ class _TranslateAnimationState extends State<AnimatedTranslate> {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder(
       tween: Tween<Offset>(begin: initPosition, end: widget.position),
+      curve: widget.curve,
       builder: (context, value, child) => Transform.translate(
         offset: value,
         child: child,
