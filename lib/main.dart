@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_order_app/CartPage/bloc/cart_bloc.dart';
 import 'package:food_order_app/HomePage/home_page.dart';
 import 'package:food_order_app/ProductsBloc/products_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,8 +32,17 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
-      builder: (context, _) => BlocProvider(
-        create: (context) => ProductsBloc()..add(FetchAndLoadProducts()),
+      builder: (context, _) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ProductsBloc()..add(FetchAndLoadProducts()),
+          ),
+          BlocProvider(
+            create: (context) => CartBloc(
+              productsBloc: context.read<ProductsBloc>(),
+            ),
+          ),
+        ],
         child: MaterialApp(
           navigatorKey: appNavigatorKey,
           debugShowCheckedModeBanner: false,
@@ -165,14 +175,12 @@ class _MainPageState extends State<MainPage> {
       child: BottomAppBar(
         color: Colors.white,
         shadowColor: null,
-        // padding: const EdgeInsets.symmetric(vertical: 12).r,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
               onPressed: () {
                 if (currentPage == MainPages.favoritePage) return;
-
                 _navigatorKey.currentState?.pushNamed(CartScreen.routeName);
                 setState(() {
                   currentPage = MainPages.favoritePage;

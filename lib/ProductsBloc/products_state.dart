@@ -1,6 +1,6 @@
 part of 'products_bloc.dart';
 
-enum ProductStateLoad { loading, loaded }
+enum ProductStateLoad {init, loading, loaded }
 
 @immutable
 class ProductsState {
@@ -8,7 +8,7 @@ class ProductsState {
   final ProductStateLoad status;
 
   const ProductsState(
-      {this.list = const [], this.status = ProductStateLoad.loading});
+      {this.list = const [], this.status = ProductStateLoad.init});
 
   ProductsState copyWith({List<Product>? list, ProductStateLoad? status}) {
     return ProductsState(

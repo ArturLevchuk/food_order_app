@@ -6,8 +6,8 @@ part 'order_preparation_state.dart';
 
 class OrderPreparationBloc
     extends Bloc<OrderPreparationEvent, OrderPreparationState> {
-  OrderPreparationBloc(double price)
-      : super(OrderPreparationState(price: price)) {
+  OrderPreparationBloc(Map<String, dynamic> size, int count)
+      : super(OrderPreparationState(size: size, count: count)) {
     on<UpdatePrice>(_onUpdatePrice);
     on<AddAdditive>(_onAddAdditive);
     on<RemoveAdditive>(_onRemoveAdditive);
@@ -18,7 +18,7 @@ class OrderPreparationBloc
     Emitter<OrderPreparationState> emit,
   ) async {
     emit(
-      state.copyWith(price: event.price),
+      state.copyWith(size: event.size),
     );
   }
 
@@ -26,8 +26,10 @@ class OrderPreparationBloc
     AddAdditive event,
     Emitter<OrderPreparationState> emit,
   ) async {
+    final Map<String, dynamic> newAdditives = Map.of(state.additives);
+    newAdditives.addAll(event.additive);
     emit(
-      state.copyWith(additives: [...state.additives, event.additive]),
+      state.copyWith(additives: newAdditives),
     );
   }
 
@@ -35,11 +37,11 @@ class OrderPreparationBloc
     RemoveAdditive event,
     Emitter<OrderPreparationState> emit,
   ) async {
+    final Map<String, dynamic> newAdditives = Map.of(state.additives);
+    newAdditives.removeWhere((key, value) => key == event.additive.keys.first);
     emit(
       state.copyWith(
-        additives: List.of(state.additives)
-          ..removeWhere(
-              (element) => element.keys.contains(event.additive.keys.first)),
+        additives: newAdditives,
       ),
     );
   }

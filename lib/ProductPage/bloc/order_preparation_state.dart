@@ -2,23 +2,30 @@ part of 'order_preparation_bloc.dart';
 
 @immutable
 class OrderPreparationState {
-  final double price;
-  final List<Map<String, dynamic>> additives;
+  final Map<String, dynamic> size;
+  final Map<String, dynamic> additives;
+  final int count;
 
-  const OrderPreparationState({required this.price, this.additives = const []});
+  const OrderPreparationState({
+    required this.count,
+    required this.size,
+    this.additives = const {},
+  });
 
   double get getPrice {
-    double additiveSum = 0;
-    for (var additive in additives) {
-      additiveSum += additive.values.first;
-    }
-    return price + additiveSum;
+    double price = 0;
+    price += size.values.first;
+    additives.forEach((key, value) {
+      price += value;
+    });
+    return price * count;
   }
 
   OrderPreparationState copyWith(
-      {double? price, List<Map<String, dynamic>>? additives}) {
+      {int? count,  Map<String, dynamic>? size, Map<String, dynamic>? additives}) {
     return OrderPreparationState(
-      price: price ?? this.price,
+      count: count ?? this.count ,
+      size: size ?? this.size,
       additives: additives ?? this.additives,
     );
   }

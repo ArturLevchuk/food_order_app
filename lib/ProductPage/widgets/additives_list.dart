@@ -57,9 +57,9 @@ class AdditivesList extends StatelessWidget {
                 BlocBuilder<OrderPreparationBloc, OrderPreparationState>(
                   builder: (context, state) {
                     return AddAdditiveButton(
-                      added: state.additives.contains(currentAdditive),
+                      added: state.additives.keys.contains(currentAdditive.keys.first),
                       onTap: () async {
-                        if (state.additives.contains(currentAdditive)) {
+                        if (state.additives.keys.contains(currentAdditive.keys.first)) {
                           context.read<OrderPreparationBloc>().add(
                                 RemoveAdditive(additive: currentAdditive),
                               );

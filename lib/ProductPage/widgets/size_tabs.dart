@@ -55,10 +55,8 @@ class _SizeTabsState extends State<SizeTabs> {
                       setState(() {
                         currentSize = sizeName;
                       });
-                      final double price =
-                          double.parse(sizes[sizeName].toString());
                       context.read<OrderPreparationBloc>().add(
-                            UpdatePrice(price: price),
+                            UpdatePrice(size: {sizeName: sizes[sizeName]}),
                           );
                     },
                   );

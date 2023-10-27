@@ -4,9 +4,9 @@ part of 'order_preparation_bloc.dart';
 sealed class OrderPreparationEvent {}
 
 class UpdatePrice extends OrderPreparationEvent {
-  final double price;
+  final Map<String, dynamic> size;
 
-  UpdatePrice({required this.price});
+  UpdatePrice({required this.size});
 }
 
 class AddAdditive extends OrderPreparationEvent {

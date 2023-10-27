@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_order_app/CartPage/bloc/cart_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'widgets/cart_card.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
   static const routeName = '/cart_screen';
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void didChangeDependencies() {
+    if (context.read<CartBloc>().state.cartStateLoad == CartStateLoad.init) {
+      context.read<CartBloc>().add(FetchAndSetCart());
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,124 +38,27 @@ class CartScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20).r,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x28000000),
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
-                ),
-              ],
-              borderRadius: BorderRadius.circular(16).r,
-            ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 85.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12).r,
-                        child: SizedBox(
-                          width: 138.w,
-                          child: Image.asset(
-                            "assets/images/bavarska.jpeg",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              "Тревісо",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Container(
-                              width: 83.w,
-                              padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 4)
-                                  .r,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15).r,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              child: Text(
-                                "Ø30",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "220 грн.",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                RPadding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Добавки: мазерати, чеддер, салямі, сулугуні, ",
-                          style: GoogleFonts.montserrat(
-                            fontSize: 14.sp,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          maxLines: 1,
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(8).r,
-                          splashColor: Colors.black.withOpacity(.1),
-                          child: Container(
-                            padding: const EdgeInsets.all(1).r,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(.05),
-                              borderRadius: BorderRadius.circular(8).r,
-                            ),
-                            child: Icon(Icons.arrow_drop_down, size: 20.w),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+      body: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          return state.cartStateLoad == CartStateLoad.loaded
+              ? ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: state.list.length,
+                  itemBuilder: (context, index) {
+                    return RPadding(
+                      padding:
+                          EdgeInsets.only(bottom: 20, top: index == 0 ? 10 : 0),
+                      child: SlideableCartCard(
+                          key: ValueKey(state.list[index].cartId),
+                          cartItem: state.list[index]),
+                    );
+                  },
+                )
+              : Center(
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor),
+                );
+        },
       ),
     );
   }

@@ -24,11 +24,8 @@ class Product {
   final String description;
   final String imgSrc;
   final ProductType productType;
-  // final List<Map<String, dynamic>> additives;
   final Map<String, dynamic> additives;
   final Map<String, dynamic> sizes;
-
-  // final List<Map<String, double>> sizes;
 
   Product({
     required this.id,
@@ -49,13 +46,6 @@ List<Product> allProducts = [
           "Соус гірчичний, сир Моцарела, салямі, свинина, мисливські ковбаски, помідори, мариновані огірки, мисливські ковбаски, перець гострий, олія часникова, зелень",
       imgSrc: "assets/images/pizza.jpeg",
       productType: ProductType.pizza,
-      // additives: [
-      //   {"Моццарелла 40г": 35},
-      //   {"Пармезан 20г": 30},
-      //   {"Чеддер 30г": 27},
-      //   {"Фета 50г": 40},
-      //   {"Сулугуні 50г": 25}
-      // ],
       additives: {
         "Моццарелла 40г": 35,
         "Пармезан 20г": 30,
@@ -68,11 +58,6 @@ List<Product> allProducts = [
         "40": 180,
         "75": 220
       }
-      // [
-      //   {"30": 150},
-      //   {"40": 180},
-      //   {"75": 220}
-      // ],
       ),
   Product(
       id: "2",
