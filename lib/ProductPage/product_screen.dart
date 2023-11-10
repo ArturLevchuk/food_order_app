@@ -20,6 +20,7 @@ class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key, required this.product});
 
   final Product product;
+  // final int count;
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -27,6 +28,7 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   Product get product => widget.product;
+  // int get count => widget.count;
   bool loading = false;
 
   @override
@@ -70,12 +72,16 @@ class _ProductScreenState extends State<ProductScreen> {
                       ),
                     ),
                     SizeTabs(product: widget.product),
-                    if (widget.product.additives.isNotEmpty)
+                    if (widget.product.additives.isNotEmpty) ...[
                       RPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: AdditivesList(product: widget.product),
                       ),
-                    SizedBox(height: 16.h),
+                      SizedBox(height: 16.h),
+                    ] else
+                      SizedBox(
+                        height: 99.h,
+                      ),
                     RPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
@@ -131,28 +137,34 @@ class _ProductScreenState extends State<ProductScreen> {
                                     size: size,
                                   );
                                   // await CartRepository.addToCart(cartItem);
-                                  CartRepository(cartApi: FirebaseCartApi())
-                                      .addToCart(cartItem);
-                                  if (context
-                                          .read<CartBloc>()
-                                          .state
-                                          .cartStateLoad !=
-                                      CartStateLoad.init) {
-                                    context.read<CartBloc>().add(
-                                          AddToCart(cartItem: cartItem),
-                                        );
-                                  }
+                                  await CartRepository(
+                                          cartApi: FirebaseCartApi())
+                                      .addToCart(cartItem)
+                                      .then((_) {
+                                    if (context
+                                            .read<CartBloc>()
+                                            .state
+                                            .cartStateLoad !=
+                                        CartStateLoad.init) {
+                                      context.read<CartBloc>().add(
+                                            AddToCart(cartItem: cartItem),
+                                          );
+                                    }
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                          builder: (context) => const MainPage(
+                                              initialPageRoute:
+                                                  CartScreen.routeName),
+                                        ),
+                                        (route) => true);
+                                  });
+                                } catch (err) {
                                   setState(() {
                                     loading = false;
                                   });
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                        builder: (context) => const MainPage(
-                                            initialPageRoute:
-                                                CartScreen.routeName),
-                                      ),
-                                      (route) => true);
-                                } catch (err) {
                                   print(err.toString());
                                 }
                               },

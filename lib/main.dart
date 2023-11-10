@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,8 +106,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  // final _navigatorKey = GlobalKey<NavigatorState>();
   late MainPages currentPage;
+  MainPages previousPage = MainPages.homePage;
 
   @override
   void initState() {
@@ -124,38 +126,72 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  Widget get page {
+    switch (currentPage) {
+      case MainPages.homePage:
+        {
+          return const HomePage();
+        }
+      case MainPages.favoritePage:
+        {
+          return const CartScreen();
+        }
+      case MainPages.cartPage:
+        {
+          return const CartScreen();
+        }
+      default:
+        {
+          return const HomePage();
+        }
+    }
+  }
+
+  bool get leftForwardAnimation {
+    if (previousPage == MainPages.cartPage) {
+      return true;
+    }
+    if (previousPage == MainPages.homePage &&
+        currentPage == MainPages.favoritePage) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        key: _navigatorKey,
-        initialRoute: widget.initialPageRoute,
-        onGenerateRoute: (settings) {
-          late Widget page;
-          Offset moveTo = const Offset(1, 0);
-          print(settings.name);
-          switch (settings.name) {
-            case "/":
-              {
-                return null;
-              }
-            case HomePage.routeName:
-              {
-                page = const HomePage();
-                if (currentPage == MainPages.cartPage) {
-                  moveTo = const Offset(-1, 0);
-                }
-                break;
-              }
-            case CartScreen.routeName:
-              {
-                page = const CartScreen();
-                break;
-              }
-          }
-          return slideAnimationRouteBuilder(page, moveTo);
-        },
-      ),
+      body: AxisAnimation(page: page, reverse: leftForwardAnimation),
+      // Navigator(
+      //   key: _navigatorKey,
+      //   initialRoute: widget.initialPageRoute,
+      //   onGenerateRoute: (settings) {
+      //     late Widget page;
+      //     Offset moveTo = const Offset(1, 0);
+      //     print(settings.name);
+      //     switch (settings.name) {
+      //       case "/":
+      //         {
+      //           return null;
+      //         }
+      //       case HomePage.routeName:
+      //         {
+      //           page = const HomePage();
+      //           if (currentPage == MainPages.cartPage) {
+      //             moveTo = const Offset(-1, 0);
+      //           }
+      //           break;
+      //         }
+      //       case CartScreen.routeName:
+      //         {
+      //           page = const CartScreen();
+      //           break;
+      //         }
+      //     }
+      //     return slideAnimationRouteBuilder(page, moveTo);
+      //   },
+      // ),
       bottomNavigationBar: bottomNavBar(context: context),
     );
   }
@@ -181,8 +217,9 @@ class _MainPageState extends State<MainPage> {
             IconButton(
               onPressed: () {
                 if (currentPage == MainPages.favoritePage) return;
-                _navigatorKey.currentState?.pushNamed(CartScreen.routeName);
+                // _navigatorKey.currentState?.pushNamed(CartScreen.routeName);
                 setState(() {
+                  previousPage = currentPage;
                   currentPage = MainPages.favoritePage;
                 });
               },
@@ -198,8 +235,9 @@ class _MainPageState extends State<MainPage> {
             IconButton(
               onPressed: () {
                 if (currentPage == MainPages.homePage) return;
-                _navigatorKey.currentState?.pushNamed(HomePage.routeName);
+                // _navigatorKey.currentState?.pushNamed(HomePage.routeName);
                 setState(() {
+                  previousPage = currentPage;
                   currentPage = MainPages.homePage;
                 });
               },
@@ -215,8 +253,9 @@ class _MainPageState extends State<MainPage> {
             IconButton(
               onPressed: () {
                 if (currentPage == MainPages.cartPage) return;
-                _navigatorKey.currentState?.pushNamed(CartScreen.routeName);
+                // _navigatorKey.currentState?.pushNamed(CartScreen.routeName);
                 setState(() {
+                  previousPage = currentPage;
                   currentPage = MainPages.cartPage;
                 });
               },
@@ -255,3 +294,63 @@ PageRouteBuilder slideAnimationRouteBuilder(Widget page, Offset begin) {
     },
   );
 }
+
+class AxisAnimation extends StatelessWidget {
+  const AxisAnimation({super.key, required this.page, required this.reverse});
+
+  final Widget page;
+  final bool reverse;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageTransitionSwitcher(
+      duration: const Duration(milliseconds: 400),
+      reverse: reverse,
+      child: page,
+      transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+        return SharedAxisTransition(
+          animation: primaryAnimation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.horizontal,
+          child: child,
+        );
+      },
+    );
+  }
+}
+
+// class FavoriteScreen extends StatelessWidget {
+//   const FavoriteScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: ListView.builder(
+//         itemCount: 5,
+//         padding: EdgeInsets.all(20).r,
+//         itemBuilder: (context, index) {
+//           return Container(
+//             width: double.infinity,
+//             padding: const EdgeInsets.all(20).r,
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               boxShadow: const [
+//                 BoxShadow(
+//                   color: Color(0x28000000),
+//                   blurRadius: 8,
+//                   offset: Offset(0, 2),
+//                 ),
+//               ],
+//               borderRadius: BorderRadius.circular(16),
+//             ),
+//             child: Row(
+//               children: [
+
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

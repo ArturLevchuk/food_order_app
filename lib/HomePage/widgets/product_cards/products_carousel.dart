@@ -1,7 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../ProductPage/product_screen.dart';
 import '../../../ProductsBloc/products_bloc.dart';
 import '../../../models/product.dart';
 import '../../../widgets/rounded_tap_button.dart';
@@ -26,16 +28,16 @@ class _ProductsCarouselState extends State<ProductsCarousel>
   late ProductType currentCategory = categoriesList.keys.first;
   late final PageController _pageController =
       PageController(viewportFraction: .72);
-  late AnimationController fadeAnimationController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 500))
-    ..value = 1;
+  // late AnimationController fadeAnimationController = AnimationController(
+  //     vsync: this, duration: const Duration(milliseconds: 500))
+  //   ..value = 1;
 
   int currentPage = 0;
 
   @override
   void dispose() {
     _pageController.dispose();
-    fadeAnimationController.dispose();
+    // fadeAnimationController.dispose();
     super.dispose();
   }
 
@@ -44,7 +46,11 @@ class _ProductsCarouselState extends State<ProductsCarousel>
     return Column(
       children: [
         RPadding(
-          padding: const EdgeInsets.only(left: 16, top: 24, bottom: 24),
+          padding: const EdgeInsets.only(
+            left: 16,
+            top: 24,
+            bottom: 24,
+          ),
           child: SizedBox(
             width: double.infinity,
             child: SingleChildScrollView(
@@ -54,19 +60,48 @@ class _ProductsCarouselState extends State<ProductsCarousel>
                 children: categoriesList.keys
                     .map(
                       (tabItemCategory) => RPadding(
-                        padding: const EdgeInsets.only(right: 3),
+                        padding: const EdgeInsets.only(right: 10),
                         child: RoundedTabButton(
                           isActive: currentCategory == tabItemCategory,
                           text: categoriesList[tabItemCategory]!,
                           onTap: () {
                             setState(() {
                               currentCategory = tabItemCategory;
+                              currentPage = 0;
                             });
-                            _pageController.jumpTo(0);
-                            fadeAnimationController.reset();
-                            fadeAnimationController.forward();
                           },
                         ),
+                        //     ChoiceChip(
+                        //   label: Text(
+                        //     categoriesList[tabItemCategory].toString(),
+                        //   ),
+                        //   selectedColor: Theme.of(context).primaryColor,
+                        //   backgroundColor: Colors.white,
+                        //   labelStyle: TextStyle(
+                        //     color: currentCategory == tabItemCategory
+                        //         ? Colors.white
+                        //         : Theme.of(context).primaryColor,
+                        //     fontSize: 16.sp,
+                        //     fontWeight: FontWeight.w600,
+                        //   ),
+                        //   side: BorderSide(
+                        //     color: Theme.of(context).primaryColor,
+                        //     width: 1.5,
+                        //   ),
+                        //   pressElevation: 4,
+                        //   selected: currentCategory == tabItemCategory,
+                        //   onSelected: (_) {
+                        //     setState(() {
+                        //       currentCategory = tabItemCategory;
+                        //       currentPage = 0;
+                        //     });
+                        //   },
+                        //   visualDensity: VisualDensity.compact,
+                        //   padding: const EdgeInsets.symmetric(
+                        //     vertical: 4,
+                        //     horizontal: 18,
+                        //   ).r,
+                        // ),
                       ),
                     )
                     .toList(),
@@ -81,9 +116,9 @@ class _ProductsCarouselState extends State<ProductsCarousel>
               final List<Product> productsByCategory = state.list
                   .where((element) => element.productType == currentCategory)
                   .toList();
-              return FadeTransition(
-                opacity: fadeAnimationController,
+              return _FadeThroughTransitionSwitcher(
                 child: PageView.builder(
+                  key: ValueKey(currentCategory),
                   controller: _pageController,
                   clipBehavior: Clip.none,
                   itemCount: productsByCategory.length,
@@ -96,9 +131,9 @@ class _ProductsCarouselState extends State<ProductsCarousel>
                     child: FittedBox(
                       alignment: Alignment.topCenter,
                       fit: BoxFit.none,
-                      child: ProductCard(
+                      child: ProductCardAnimated(
                         product: productsByCategory[index],
-                        isExpanded: currentPage == index,
+                        isCurrentCard: currentPage == index,
                       ),
                     ),
                   ),
@@ -112,8 +147,56 @@ class _ProductsCarouselState extends State<ProductsCarousel>
               );
             },
           ),
-        )
+        ),
+        SizedBox(height: 15.w),
       ],
+    );
+  }
+}
+
+class ProductCardAnimated extends StatefulWidget {
+  const ProductCardAnimated({
+    super.key,
+    required this.product,
+    required this.isCurrentCard,
+  });
+
+  final Product product;
+  final bool isCurrentCard;
+
+  @override
+  State<ProductCardAnimated> createState() => _ProductCardAnimatedState();
+}
+
+class _ProductCardAnimatedState extends State<ProductCardAnimated> {
+  int productCount = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer(
+      tappable: false,
+      useRootNavigator: true,
+      closedColor: Colors.white,
+      routeSettings: RouteSettings(arguments: productCount),
+      closedShape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16).r),
+      closedElevation: 5,
+      closedBuilder: (context, openAction) {
+        return ProductCard(
+          product: widget.product,
+          isExpanded: widget.isCurrentCard,
+          buttonTap: (count) {
+            productCount = count;
+            openAction();
+          },
+        );
+      },
+      openShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+      openBuilder: (context, action) {
+        return ProductScreen(
+          product: widget.product,
+        );
+      },
     );
   }
 }
@@ -149,6 +232,30 @@ class _TranslateAnimationState extends State<AnimatedTranslate> {
       ),
       duration: widget.duration,
       child: widget.child,
+    );
+  }
+}
+
+class _FadeThroughTransitionSwitcher extends StatelessWidget {
+  const _FadeThroughTransitionSwitcher({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageTransitionSwitcher(
+      child: child,
+      transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+        return FadeTransition(
+          opacity: primaryAnimation,
+          child: child,
+        );
+        // return FadeThroughTransition(
+        //   animation: primaryAnimation,
+        //   secondaryAnimation: secondaryAnimation,
+        //   child: child,
+        // );
+      },
     );
   }
 }

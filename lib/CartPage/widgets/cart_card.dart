@@ -34,11 +34,11 @@ class _SlideableCartCardState extends State<SlideableCartCard>
   void initState() {
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
     );
     opacityAnimation = Tween<double>(begin: 1, end: 0).animate(controller);
     sizeAnimation = Tween<double>(begin: 1, end: 0).animate(
-      CurvedAnimation(parent: controller, curve: Curves.elasticInOut),
+      CurvedAnimation(parent: controller, curve: Curves.easeInOutQuint),
     );
     super.initState();
   }
@@ -204,7 +204,6 @@ class _SlideableCartCardState extends State<SlideableCartCard>
       ];
 }
 
-
 class CartCard extends StatelessWidget {
   const CartCard({
     super.key,
@@ -221,6 +220,7 @@ class CartCard extends StatelessWidget {
         ? "${cartItem.additives.keys.reduce((value, element) => "$value, $element")}."
         : "Немає.";
     return AnimatedContainer(
+      curve: Curves.fastOutSlowIn,
       width: double.infinity,
       padding: const EdgeInsets.all(20).r,
       decoration: BoxDecoration(

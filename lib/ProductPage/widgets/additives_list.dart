@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,7 +34,7 @@ class AdditivesList extends StatelessWidget {
               Map.fromEntries([product.additives.entries.elementAt(index)]);
           final String nameOfAddetive = currentAdditive.keys.first;
           final String priceOfAddetive =
-              currentAdditive.values.first.toString();
+              currentAdditive[nameOfAddetive].toString();
           return RPadding(
             padding: const EdgeInsets.only(top: 10),
             child: Row(
@@ -56,10 +57,15 @@ class AdditivesList extends StatelessWidget {
                 SizedBox(width: 10.w),
                 BlocBuilder<OrderPreparationBloc, OrderPreparationState>(
                   builder: (context, state) {
+                    final added = state.additives.keys
+                        .contains(currentAdditive.keys.first);
+
                     return AddAdditiveButton(
-                      added: state.additives.keys.contains(currentAdditive.keys.first),
+                      // key: ValueKey(added),
+                      added: added,
                       onTap: () async {
-                        if (state.additives.keys.contains(currentAdditive.keys.first)) {
+                        if (state.additives.keys
+                            .contains(currentAdditive.keys.first)) {
                           context.read<OrderPreparationBloc>().add(
                                 RemoveAdditive(additive: currentAdditive),
                               );
@@ -106,13 +112,44 @@ class AddAdditiveButton extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           shape: BoxShape.circle,
         ),
-        child: FittedBox(
-          child: Icon(
-            added ? Icons.done : Icons.add,
-            color: Colors.white,
+        child: FadeThroughtTransitionSwitcher(
+          child: FittedBox(
+            key: ValueKey(added),
+            child: Icon(
+              added ? Icons.done : Icons.add,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class FadeThroughtTransitionSwitcher extends StatelessWidget {
+  const FadeThroughtTransitionSwitcher({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageTransitionSwitcher(
+      child: child,
+      transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+        return FadeThroughTransition(
+          animation: primaryAnimation,
+          secondaryAnimation: secondaryAnimation,
+          fillColor: Colors.transparent,
+          child: child,
+        );
+        // return SharedAxisTransition(
+        //   fillColor: Colors.transparent,
+        //   animation: primaryAnimation,
+        //   secondaryAnimation: secondaryAnimation,
+        //   transitionType: SharedAxisTransitionType.scaled,
+        //   child: child,
+        // );
+      },
     );
   }
 }

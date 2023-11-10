@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:food_order_app/ProductPage/product_screen.dart';
-import 'package:food_order_app/main.dart';
 import 'package:food_order_app/models/product.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../widgets/count_button.dart';
@@ -13,10 +11,12 @@ class ProductCard extends StatefulWidget {
     super.key,
     required this.isExpanded,
     required this.product,
+    required this.buttonTap,
   });
 
   final Product product;
   final bool isExpanded;
+  final Function(int count) buttonTap;
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -30,22 +30,22 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     return Container(
       width: 256.w,
-      // width: MediaQuery.of(context).size.width * 0.6,
       padding: const EdgeInsets.all(16).w,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16).r,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x28000000),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          )
-        ],
+        // boxShadow: const [
+        // BoxShadow(
+        //   color: Color(0x28000000),
+        //   blurRadius: 8,
+        //   offset: Offset(0, 2),
+        // )
+        // ],
       ),
       child: AnimatedSize(
         alignment: Alignment.topCenter,
         duration: const Duration(milliseconds: 300),
+        curve: Curves.fastOutSlowIn,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -132,14 +132,17 @@ class _ProductCardState extends State<ProductCard> {
                         buttonName: "Додати до замовлення",
                         fontSize: 13,
                         onTap: () {
-                          MyApp.appNavigatorKey.currentState?.push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductScreen(product: product),
-                              settings: RouteSettings(arguments: count),
-                            ),
-                          );
+                          widget.buttonTap(count);
                         },
+                        // () {
+                        //   MyApp.appNavigatorKey.currentState?.push(
+                        //     MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           ProductScreen(product: product),
+                        //       settings: RouteSettings(arguments: count),
+                        //     ),
+                        //   );
+                        // },
                       ),
                     ),
                     const RPadding(
