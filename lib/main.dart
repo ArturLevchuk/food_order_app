@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => CartBloc(
-              productsBloc: context.read<ProductsBloc>(),
+              productsBloc: BlocProvider.of<ProductsBloc>(context),
+              
             ),
           ),
         ],
@@ -106,7 +107,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  // final _navigatorKey = GlobalKey<NavigatorState>();
   late MainPages currentPage;
   MainPages previousPage = MainPages.homePage;
 
@@ -163,35 +163,6 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AxisAnimation(page: page, reverse: leftForwardAnimation),
-      // Navigator(
-      //   key: _navigatorKey,
-      //   initialRoute: widget.initialPageRoute,
-      //   onGenerateRoute: (settings) {
-      //     late Widget page;
-      //     Offset moveTo = const Offset(1, 0);
-      //     print(settings.name);
-      //     switch (settings.name) {
-      //       case "/":
-      //         {
-      //           return null;
-      //         }
-      //       case HomePage.routeName:
-      //         {
-      //           page = const HomePage();
-      //           if (currentPage == MainPages.cartPage) {
-      //             moveTo = const Offset(-1, 0);
-      //           }
-      //           break;
-      //         }
-      //       case CartScreen.routeName:
-      //         {
-      //           page = const CartScreen();
-      //           break;
-      //         }
-      //     }
-      //     return slideAnimationRouteBuilder(page, moveTo);
-      //   },
-      // ),
       bottomNavigationBar: bottomNavBar(context: context),
     );
   }
@@ -321,7 +292,6 @@ class AxisAnimation extends StatelessWidget {
 
 // class FavoriteScreen extends StatelessWidget {
 //   const FavoriteScreen({super.key});
-
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -345,7 +315,6 @@ class AxisAnimation extends StatelessWidget {
 //             ),
 //             child: Row(
 //               children: [
-
 //               ],
 //             ),
 //           );

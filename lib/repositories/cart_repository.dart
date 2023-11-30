@@ -39,13 +39,13 @@ class CartRepository {
   }
 }
 
-sealed class CartApi {
+abstract interface class CartApi {
   Future<List<Map<String, dynamic>>> getCartList();
   Future<void> addToCart();
   Future<void> removeFromCart(String id);
 }
 
-class FirebaseCartApi extends CartApi {
+class FirebaseCartApi implements CartApi {
   @override
   Future<List<Map<String, dynamic>>> getCartList() async {
     //TODO: http request to get items
