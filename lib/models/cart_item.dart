@@ -3,14 +3,14 @@ import 'package:food_order_app/models/product.dart';
 class CartItem {
   final String cartId;
   final int count;
-  final Product product;
+  final String productId;
   final Map<String, dynamic> additives;
   final Map<String, dynamic> size;
 
   CartItem({
     required this.cartId,
     required this.count,
-    required this.product,
+    required this.productId,
     required this.additives,
     required this.size,
   });

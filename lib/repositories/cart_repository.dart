@@ -1,37 +1,16 @@
-import 'package:food_order_app/ProductsBloc/products_bloc.dart';
-import 'package:food_order_app/models/cart_item.dart';
-
-import '../models/product.dart';
+import '../models/cart_item.dart';
 
 class CartRepository {
   final CartApi cartApi;
 
   CartRepository({required this.cartApi});
 
-  Future<List<CartItem>> loadCartItems(ProductsBloc bloc) async {
-    final cartData = await cartApi.getCartList();
-    return cartData.map((cartMap) {
-      final productId = cartMap['productId'];
-      late Product product;
-      if (bloc.state.status != ProductStateLoad.init &&
-          bloc.state.list.any((element) => element.id == productId)) {
-        product =
-            bloc.state.list.firstWhere((element) => element.id == productId);
-      } else {
-        //TODO: http reauest for product
-      }
-      return CartItem(
-        cartId: cartMap['cartId'],
-        count: int.parse(cartMap['count']),
-        product: product,
-        additives: cartMap['additives'],
-        size: cartMap['size'],
-      );
-    }).toList();
+  Future<List<CartItem>> loadCartItems() async {
+    return cartApi.getCartList();
   }
 
   Future<void> addToCart(CartItem cartItem) async {
-    return cartApi.addToCart();
+    return cartApi.addToCart(cartItem);
   }
 
   Future<void> removeFromCart(String id) async {
@@ -40,20 +19,27 @@ class CartRepository {
 }
 
 abstract interface class CartApi {
-  Future<List<Map<String, dynamic>>> getCartList();
-  Future<void> addToCart();
+  Future<List<CartItem>> getCartList();
+  Future<void> addToCart(CartItem cartItem);
   Future<void> removeFromCart(String id);
 }
 
-class FirebaseCartApi implements CartApi {
+class LocalCartApi implements CartApi {
   @override
-  Future<List<Map<String, dynamic>>> getCartList() async {
-    //TODO: http request to get items
-    return cartItems;
+  Future<List<CartItem>> getCartList() async {
+    return cartItems.map((cartMap) {
+      return CartItem(
+        cartId: cartMap['cartId'],
+        count: int.parse(cartMap['count']),
+        productId: cartMap['productId'],
+        additives: cartMap['additives'],
+        size: cartMap['size'],
+      );
+    }).toList();
   }
 
   @override
-  Future<void> addToCart() async {
+  Future<void> addToCart(CartItem cartItem) async {
     //TODO: add to cart
   }
 
