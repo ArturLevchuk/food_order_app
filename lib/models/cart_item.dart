@@ -1,5 +1,3 @@
-import 'package:food_order_app/models/product.dart';
-
 class CartItem {
   final String cartId;
   final int count;

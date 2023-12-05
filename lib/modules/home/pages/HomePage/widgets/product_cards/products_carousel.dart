@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../ProductPage/product_screen.dart';
 import '../../../../../../models/product.dart';
 import '../../../../../../widgets/rounded_tap_button.dart';
 import '../../../../vm/products_viev_model/products_controller.dart';
@@ -141,53 +140,6 @@ class _ProductsCarouselState extends State<ProductsCarousel>
     );
   }
 }
-
-// class ProductCardAnimated extends StatefulWidget {
-//   const ProductCardAnimated({
-//     super.key,
-//     required this.product,
-//     required this.isCurrentCard,
-//   });
-
-//   final Product product;
-//   final bool isCurrentCard;
-
-//   @override
-//   State<ProductCardAnimated> createState() => _ProductCardAnimatedState();
-// }
-
-// class _ProductCardAnimatedState extends State<ProductCardAnimated> {
-//   int productCount = 1;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return OpenContainer(
-//       tappable: false,
-//       useRootNavigator: true,
-//       closedColor: Colors.white,
-//       routeSettings: RouteSettings(arguments: productCount),
-//       closedShape:
-//           RoundedRectangleBorder(borderRadius: BorderRadius.circular(16).r),
-//       closedElevation: 5,
-//       closedBuilder: (context, openAction) {
-//         return ProductCard(
-//           product: widget.product,
-//           isExpanded: widget.isCurrentCard,
-//           buttonTap: (count) {
-//             productCount = count;
-//             openAction();
-//           },
-//         );
-//       },
-//       openShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-//       openBuilder: (context, action) {
-//         return ProductScreen(
-//           product: widget.product,
-//         );
-//       },
-//     );
-//   }
-// }
 
 class AnimatedTranslate extends StatefulWidget {
   const AnimatedTranslate({

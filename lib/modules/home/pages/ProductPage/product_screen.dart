@@ -153,7 +153,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             } catch (err) {
                               setState(() {
                                 loading = false;
-                              });
+                              });     
                               print(err.toString());
                             }
                           },
