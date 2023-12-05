@@ -1,4 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import '../../transitions.dart';
 import '/modules/home/pages/HomePage/home_page.dart';
 import '/modules/home/pages/favorite_page.dart';
 import '/modules/home/pages/main_home_page.dart';
@@ -27,17 +28,21 @@ class HomeModule extends Module {
       children: [
         ChildRoute(
           FavoritePage.routeName,
-          child: (context) => const FavoritePageWithTransition(),
+          child: (context) => TransitionCover(
+              transitionCoverSettings: r.args.data,
+              child: const FavoritePage()),
           transition: TransitionType.noTransition,
         ),
         ChildRoute(
           HomePage.routeName,
-          child: (context) => HomePageWithTrasition(transition: r.args.data),
+          child: (context) => TransitionCover(
+              transitionCoverSettings: r.args.data, child: const HomePage()),
           transition: TransitionType.noTransition,
         ),
         ChildRoute(
           CartPage.routeName,
-          child: (context) => CartPageWithTrasition(transition: r.args.data),
+          child: (context) => TransitionCover(
+              transitionCoverSettings: r.args.data, child: const CartPage()),
           transition: TransitionType.noTransition,
         ),
       ],

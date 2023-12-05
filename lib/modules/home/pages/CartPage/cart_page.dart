@@ -1,9 +1,7 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_order_app/modules/home/vm/cart_viev_model/cart_controller.dart';
-import 'package:food_order_app/transitions.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/cart_card.dart';
 
@@ -67,46 +65,5 @@ class _CartPageState extends State<CartPage> {
         },
       ),
     );
-  }
-}
-
-class CartPageWithTrasition extends StatefulWidget {
-  const CartPageWithTrasition({super.key, this.transition});
-
-  final bool? transition;
-
-  @override
-  State<CartPageWithTrasition> createState() => _CartPageWithTrasitionState();
-}
-
-class _CartPageWithTrasitionState extends State<CartPageWithTrasition> {
-  Widget child = const SizedBox();
-
-  @override
-  Widget build(BuildContext context) {
-    Future.microtask(() {
-      setState(() {
-        child = const CartPage();
-      });
-    });
-    if (widget.transition == null) {
-      return PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child: child,
-        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-          return fastAccesTransition(child, primaryAnimation,
-              secondaryAnimation, FastAccesTransition.fadeThrough);
-        },
-      );
-    } else {
-      return PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child: child,
-        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-          return fastAccesTransition(child, primaryAnimation,
-              secondaryAnimation, FastAccesTransition.xAxis);
-        },
-      );
-    }
   }
 }

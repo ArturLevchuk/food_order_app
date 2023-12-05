@@ -15,37 +15,3 @@ class FavoritePage extends StatelessWidget {
     );
   }
 }
-
-
-class FavoritePageWithTransition extends StatefulWidget {
-  const FavoritePageWithTransition({super.key});
-
-  @override
-  State<FavoritePageWithTransition> createState() => _FavoritePageWithTransitionState();
-}
-
-class _FavoritePageWithTransitionState extends State<FavoritePageWithTransition> {
-Widget child = const SizedBox();
-
-  @override
-  Widget build(BuildContext context) {
-    Future.microtask(() {
-      setState(() {
-        child = const FavoritePage();
-      });
-    });
-
-    return PageTransitionSwitcher(
-      duration: const Duration(milliseconds: 500),
-      child: child,
-      transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-        return SharedAxisTransition(
-          animation: primaryAnimation,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: SharedAxisTransitionType.horizontal,
-          child: child,
-        );
-      },
-    );
-  }
-}

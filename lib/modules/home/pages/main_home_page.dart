@@ -4,14 +4,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_order_app/modules/home/pages/favorite_page.dart';
 
+import '../../../transitions.dart';
 import 'CartPage/cart_page.dart';
 import 'HomePage/home_page.dart';
 
 class MainHomePage extends StatelessWidget {
   const MainHomePage({super.key});
 
-  void changeInternalPage(String pageRoute, [dynamic arguments]) {
-    Modular.to.navigate(".$pageRoute", arguments: arguments);
+  void changeInternalPage(String pageRoute,
+      [TransitionCoverSettings? transitionCoverSettings]) {
+    Modular.to.navigate(
+      ".$pageRoute",
+      arguments: transitionCoverSettings,
+    );
   }
 
   @override
@@ -47,7 +52,13 @@ class MainHomePage extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   if (Modular.to.path.endsWith(FavoritePage.routeName)) return;
-                  changeInternalPage(FavoritePage.routeName);
+                  changeInternalPage(
+                    FavoritePage.routeName,
+                    const TransitionCoverSettings(
+                      transition: FastAccesTransition.xAxis,
+                      reversed: true,
+                    ),
+                  );
                 },
                 icon: SvgPicture.asset(
                   "assets/icons/favorite.svg",
@@ -63,7 +74,13 @@ class MainHomePage extends StatelessWidget {
                   if (Modular.to.path.endsWith(HomePage.routeName)) return;
                   final bool rightToLeft =
                       Modular.to.path.endsWith(CartPage.routeName);
-                  changeInternalPage(HomePage.routeName, rightToLeft);
+                  changeInternalPage(
+                    HomePage.routeName,
+                    TransitionCoverSettings(
+                      transition: FastAccesTransition.xAxis,
+                      reversed: rightToLeft,
+                    ),
+                  );
                 },
                 icon: SvgPicture.asset(
                   "assets/icons/home.svg",
@@ -77,7 +94,11 @@ class MainHomePage extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   if (Modular.to.path.endsWith(CartPage.routeName)) return;
-                  changeInternalPage(CartPage.routeName, true);
+                  changeInternalPage(
+                    CartPage.routeName,
+                    const TransitionCoverSettings(
+                        transition: FastAccesTransition.xAxis),
+                  );
                 },
                 icon: SvgPicture.asset(
                   "assets/icons/cart.svg",
